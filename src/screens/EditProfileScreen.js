@@ -37,7 +37,6 @@ const EditProfileScreen = () => {
           response.data.serviceproviders
         ) {
           const maidDetails = response.data.serviceproviders;
-          // Set the existing details in the state
           setName(maidDetails.Username);
           setNewNumber(user_mobile_number);
           setAge(maidDetails.Age);

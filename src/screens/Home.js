@@ -18,31 +18,41 @@ import messaging from '@react-native-firebase/messaging';
 import {sendNotificationToCustomer} from '../utils/notification';
 import LottieView from 'lottie-react-native';
 import {useFocusEffect} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CustomMessageDisplay = ({message, onAccept, onReject, onClose}) => {
-  const [customerPhoneNumber, setCustomerPhoneNumber] = useState(null);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    if (message && message.notification && message.notification.body) {
-      const customerPhoneNumberLine = message.notification.body.match(
-        /Customer_phone_number: (\d+)/,
-      );
-
-      if (customerPhoneNumberLine) {
-        const mobileNumber = customerPhoneNumberLine[1];
-        setCustomerPhoneNumber(mobileNumber);
+  const storeMessageInAsyncStorage = async () => {
+    try {
+      const existingMessage = await AsyncStorage.getItem('lastMessage');
+      if (existingMessage) {
+        // If there's an existing message, remove it
+        await AsyncStorage.removeItem('lastMessage');
+        console.log('old message removed');
       }
+      // Store the new message
+      await AsyncStorage.setItem('lastMessage', JSON.stringify(message));
+      console.log('Message stored successfully:', message);
+    } catch (error) {
+      console.log('Error storing message:', error);
+    }
+  };
+
+  useEffect(() => {
+    // Store the message in AsyncStorage when a new message arrives
+    if (message) {
+      storeMessageInAsyncStorage(message);
     }
   }, [message]);
 
   const handleRejectAction = () => {
-    onReject(customerPhoneNumber);
+    onReject();
     onClose();
   };
 
   const handleAcceptAction = () => {
-    onAccept(customerPhoneNumber);
+    onAccept();
     onClose();
     navigation.navigate('OderStatus', {message});
   };
@@ -146,6 +156,34 @@ const Home = () => {
   const [numberOfLatestRequests, setNumberOfLatestRequests] = useState(0);
   const route = useRoute();
   const {user_mobile_number} = route.params;
+  const [storedMessage, setStoredMessage] = useState(null);
+  const [customerPhoneNumber, setCustomerPhoneNumber] = useState(null);
+  const [forceRender, setForceRender] = useState(false);
+
+  useEffect(() => {
+    // Retrieve the stored message from AsyncStorage when the component mounts
+    const retrieveStoredMessage = async () => {
+      try {
+        const message = await AsyncStorage.getItem('lastMessage');
+        if (message) {
+          const parsedMessage = JSON.parse(message);
+          const body = parsedMessage.notification.body;
+          const phoneNumberIndex =
+            body.indexOf('Customer_phone_number:') +
+            'Customer_phone_number:'.length;
+          const phoneNumber = body.substring(phoneNumberIndex).trim();
+          console.log('Parsed customer phone number:', phoneNumber);
+          setCustomerPhoneNumber(phoneNumber);
+          // Update dummy state variable to force re-render
+          setForceRender(prevState => !prevState);
+        }
+      } catch (error) {
+        console.log('Error retrieving stored message:', error);
+      }
+    };
+
+    retrieveStoredMessage();
+  }, [forceRender]);
 
   const fetchMaidDetails = async () => {
     try {
@@ -240,30 +278,29 @@ const Home = () => {
 
   // ... (existing imports and code)
 
-  const sendNotificationToBackend = async (action, customerPhoneNumber) => {
+  const sendNotificationToBackend = async action => {
     try {
-      // Replace with the actual mobile number
-
-      const mobileNumber = '8088812371';
-
-      if (!mobileNumber) {
+      if (!customerPhoneNumber) {
         console.error('Customer phone number not available');
         return;
       }
-      console.log(mobileNumber, 'Hii this customer Number');
+      console.log(customerPhoneNumber, 'Hii this customer Number');
 
       // Retrieve the FCM token for the customer from Firestore
       const customerDoc = await firestore()
         .collection('customer_tokens')
-        .doc(mobileNumber)
+        .doc(customerPhoneNumber)
         .get();
 
       if (customerDoc.exists) {
         const customerData = customerDoc.data();
-        console.log('Retrieved Customer Data:', customerData, mobileNumber);
+        console.log(
+          'Retrieved Customer Data:',
+          customerData,
+          customerPhoneNumber,
+        );
 
-        // Send the notification to the customer
-        await sendNotificationToCustomer(mobileNumber, action);
+        await sendNotificationToCustomer(customerPhoneNumber, action);
 
         // Handle success (e.g., show a success message to the user)
         console.log('Notification sent to the customer!');
@@ -590,7 +627,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
     elevation: 5,
     top: '43%',
-    height: 380,
+    height: 390,
     marginTop: -340,
   },
   notificationText: {
