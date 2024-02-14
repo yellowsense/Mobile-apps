@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1008375634733",
+    "project_id": "yellowsense-technologies",
+    "storage_bucket": "yellowsense-technologies.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008375634733:android:196738756b20b7cf9191a4",
+        "android_client_info": {
+          "package_name": "com.service_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcUfFx1dkjaEwHj5qely3SA3LhbpfAcXM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008375634733:android:a5cf10f0358c179e9191a4",
+        "android_client_info": {
+          "package_name": "com.yellowsense"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcUfFx1dkjaEwHj5qely3SA3LhbpfAcXM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
