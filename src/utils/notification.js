@@ -124,7 +124,7 @@ export async function sendNotificationToCustomer(mobileNumber, action) {
 
     // Send the notification using the backend API
     const response = await fetch(
-      'https://yellowsensebackendapi.azurewebsites.net/send_notification_from_serviceprovider',
+      'https://backendapiyellowsense.azurewebsites.net/send_notification_from_serviceprovider',
       {
         method: 'POST',
         headers: {
@@ -149,38 +149,39 @@ export async function sendNotificationToCustomer(mobileNumber, action) {
   }
 }
 
-// export async function sendNotificationToCustomer(mobileNumber, action) {
-//   try {
-//     // Construct the notification payload
-//     const notificationPayload = {
-//       mobile_number: mobileNumber,
-//       action: action,
-//     };
+export async function sendNotificationToCustomerAboutLocation(mobileNumber) {
+  try {
+    const LocationPayload = {
+      customer_mobile_number: mobileNumber,
+    };
 
-//     // Send the notification using the backend API
-//     const response = await fetch(
-//       'https://yellowsensebackendapi.azurewebsites.net/send_notification_from_serviceprovider',
-//       {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(notificationPayload),
-//       },
-//     );
+    const response = await fetch(
+      'https://backendapiyellowsense.azurewebsites.net/send_notification_to_customer_about_reached_update',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(LocationPayload),
+      },
+    );
 
-//     // Check if the request was successful (status code 200)
-//     if (response.ok) {
-//       const responseBody = await response.json();
-//       console.log('Notification sent to the customer successfully!');
-//       console.log('Notification Response:', responseBody);
-//     } else {
-//       console.error(
-//         'Error sending notification to the customer. Server returned:',
-//         response.status,
-//       );
-//     }
-//   } catch (error) {
-//     console.error('Error sending notification to the customer:', error);
-//   }
-// }
+    if (response.ok) {
+      const responseBody = await response.json();
+      console.log(
+        'Notification sent to the customer About Location successfully!',
+      );
+      console.log('Notification Response:', responseBody);
+    } else {
+      console.error(
+        'Error sending notification to the customer About Location. Server returned:',
+        response.status,
+      );
+    }
+  } catch (error) {
+    console.error(
+      'Error sending notification to the customer About Location:',
+      error,
+    );
+  }
+}

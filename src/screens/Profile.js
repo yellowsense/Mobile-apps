@@ -48,7 +48,11 @@ const Profile = () => {
     };
 
     fetchMaidDetails();
-  }, []);
+
+    const intervalId = setInterval(fetchMaidDetails, 2000);
+
+    return () => clearInterval(intervalId);
+  }, [user_mobile_number]);
 
   return (
     <View style={styles.container}>
@@ -65,6 +69,7 @@ const Profile = () => {
           {maidDetails ? (
             <>
               {renderDetail('Name', maidDetails.Username)}
+              {renderDetail('Number', maidDetails.MobileNumber)}
               {renderDetail('Age', maidDetails.Age)}
               {renderDetail('Gender', maidDetails.Gender)}
               {maidDetails.Languages &&
@@ -83,7 +88,6 @@ const Profile = () => {
         <TouchableOpacity
           style={styles.profiles4BtnView}
           onPress={() => {
-            // Pass the callback function to PersonalDetails
             updateButtonText();
           }}>
           <Image

@@ -54,7 +54,7 @@ const CustomMessageDisplay = ({message, onAccept, onReject, onClose}) => {
   const handleAcceptAction = () => {
     onAccept();
     onClose();
-    navigation.navigate('OderStatus', {message});
+    navigation.navigate('OderStatus');
   };
 
   return (
@@ -156,12 +156,10 @@ const Home = () => {
   const [numberOfLatestRequests, setNumberOfLatestRequests] = useState(0);
   const route = useRoute();
   const {user_mobile_number} = route.params;
-  const [storedMessage, setStoredMessage] = useState(null);
   const [customerPhoneNumber, setCustomerPhoneNumber] = useState(null);
   const [forceRender, setForceRender] = useState(false);
 
   useEffect(() => {
-    // Retrieve the stored message from AsyncStorage when the component mounts
     const retrieveStoredMessage = async () => {
       try {
         const message = await AsyncStorage.getItem('lastMessage');
@@ -172,9 +170,7 @@ const Home = () => {
             body.indexOf('Customer_phone_number:') +
             'Customer_phone_number:'.length;
           const phoneNumber = body.substring(phoneNumberIndex).trim();
-          console.log('Parsed customer phone number:', phoneNumber);
           setCustomerPhoneNumber(phoneNumber);
-          // Update dummy state variable to force re-render
           setForceRender(prevState => !prevState);
         }
       } catch (error) {
@@ -229,7 +225,6 @@ const Home = () => {
       )
       .then(res => {
         setdata(res?.data);
-        // console.log('res====>', res?.data);
       })
       .catch(err => {
         console.log('err', err);

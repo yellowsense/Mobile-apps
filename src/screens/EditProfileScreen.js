@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
-  Image,
   TextInput,
   TouchableOpacity,
   StyleSheet,
@@ -12,6 +11,7 @@ import {wpx, hpx} from '../Component/responsive';
 import ScreenHeader from '../Component/CustomHeader/ScreenHeader';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
+import {ActivityIndicator} from 'react-native';
 
 const EditProfileScreen = () => {
   const navigation = useNavigation();
@@ -23,6 +23,7 @@ const EditProfileScreen = () => {
   const [age, setAge] = useState('');
   const [services, setServices] = useState('');
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchMaidDetails = async () => {
@@ -54,6 +55,7 @@ const EditProfileScreen = () => {
   }, [user_mobile_number]);
 
   const handleUpdate = async () => {
+    setLoading(true);
     try {
       const updatedProfile = {
         user_mobile_number,
@@ -85,6 +87,7 @@ const EditProfileScreen = () => {
           position: 'top',
           visibilityTime: 2000,
           autoHide: true,
+          onHide: () => navigation.goBack(),
         });
       } else {
         console.error('Error updating profile');
@@ -103,6 +106,8 @@ const EditProfileScreen = () => {
         text1: 'Error Updating Profile',
         position: 'top',
       });
+    } finally {
+      setLoading(false); // Set loading to false regardless of success or failure
     }
   };
 
@@ -127,6 +132,7 @@ const EditProfileScreen = () => {
           value={new_mobile_number}
           onChangeText={txt => setNewNumber(txt)}
           style={styles.editProfileInfoText}
+          editable={false}
         />
       </View>
 
@@ -157,8 +163,15 @@ const EditProfileScreen = () => {
         />
       </View>
 
-      <TouchableOpacity style={styles.updateBtnView} onPress={handleUpdate}>
-        <Text style={styles.updateBtnText}>Update</Text>
+      <TouchableOpacity
+        style={styles.updateBtnView}
+        onPress={handleUpdate}
+        disabled={loading}>
+        {loading ? (
+          <ActivityIndicator color="white" size={24} />
+        ) : (
+          <Text style={styles.updateBtnText}>Update</Text>
+        )}
       </TouchableOpacity>
 
       <Toast ref={ref => Toast.setRef(ref)} />
