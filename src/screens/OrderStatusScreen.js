@@ -3,7 +3,10 @@ import React, {useEffect, useState} from 'react';
 import ScreenHeader from '../Component/CustomHeader/ScreenHeader';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {sendNotificationToCustomerAboutLocation} from '../utils/notification';
+import {
+  sendNotificationToCustomerAboutLocation,
+  statusUpdationAboutWork,
+} from '../utils/notification';
 import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 
@@ -71,6 +74,42 @@ const OrderStatusScreen = () => {
     }
   };
 
+  const sendNotificationToBackendAboutTask = async () => {
+    try {
+      if (!customerPhoneNumber) {
+        console.error('Customer phone number not available');
+        return;
+      }
+
+      // Retrieve the FCM token for the customer from Firestore
+      const customerDoc = await firestore()
+        .collection('customer_tokens')
+        .doc(customerPhoneNumber)
+        .get();
+
+      if (customerDoc.exists) {
+        const customerData = customerDoc.data();
+        console.log(
+          'Retrieved Customer Data:',
+          customerData,
+          customerPhoneNumber,
+        );
+
+        // Send notification to the backend server
+        await statusUpdationAboutWork(customerPhoneNumber);
+
+        // Handle success (e.g., show a success message to the user)
+        console.log(
+          'Notification sent to the backend server about reaching the location!',
+        );
+      } else {
+        console.error('Customer FCM token not found in Firestore');
+      }
+    } catch (error) {
+      console.error('Error sending notification to backend:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View>
@@ -89,7 +128,9 @@ const OrderStatusScreen = () => {
             <Text style={styles.textStatus}>Location Reached</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.buttonCS}>
+          <TouchableOpacity
+            style={styles.buttonCS}
+            onPress={sendNotificationToBackendAboutTask}>
             <Text style={styles.textStatus}>Completed Service</Text>
           </TouchableOpacity>
         </View>

@@ -11,11 +11,11 @@ import {wpx, hpx} from '../Component/responsive';
 import ScreenHeader from '../Component/CustomHeader/ScreenHeader';
 import axios from 'axios';
 
-const CompletedRequest = ({route}) => {
+const AcceptedRequest = ({route}) => {
   const [data, setdata] = useState([]);
   const [loading, setLoading] = useState(true);
   const {ProviderNumber} = route.params;
-  const [hasCompletedRequests, setHasCompletedRequests] = useState(false); // New state to track if there are accepted requests
+  const [hasAcceptedRequests, setHasAcceptedRequests] = useState(false); // New state to track if there are accepted requests
 
   useEffect(() => {
     getlist();
@@ -25,12 +25,12 @@ const CompletedRequest = ({route}) => {
   const getlist = () => {
     axios
       .get(
-        `https://backendapiyellowsense.azurewebsites.net/serviceprovider/requests_details?provider_mobile=${ProviderNumber}&request_status=completed`,
+        `https://backendapiyellowsense.azurewebsites.net/serviceprovider/requests_details?provider_mobile=${ProviderNumber}&request_status=accept`,
       )
       .then(res => {
-        const completedRequests = res?.data?.completed_requests || [];
-        setdata(completedRequests);
-        setHasCompletedRequests(completedRequests.length > 0); // Update hasAcceptedRequests state based on the length of acceptRequests array
+        const acceptRequests = res?.data?.accept_requests || [];
+        setdata(acceptRequests);
+        setHasAcceptedRequests(acceptRequests.length > 0); // Update hasAcceptedRequests state based on the length of acceptRequests array
         console.log('res====>', res);
       })
       .catch(err => {
@@ -54,9 +54,7 @@ const CompletedRequest = ({route}) => {
           </View>
 
           <View style={styles.helperInfoText}>
-            <Text style={styles.helperInfoName}>
-              Customer Name: {item?.user_name}
-            </Text>
+            <Text style={styles.helperInfoName}>Name: {item?.user_name}</Text>
             <Text style={styles.helperInfoName}>
               Service Type: {item?.service_type}
             </Text>
@@ -72,13 +70,13 @@ const CompletedRequest = ({route}) => {
   return (
     <View style={styles.container}>
       <View>
-        <ScreenHeader title="Completed Request" />
+        <ScreenHeader title="Accepted Request" />
       </View>
       {loading ? (
         <View>
           <ActivityIndicator size="large" color="#FDD312" />
         </View>
-      ) : hasCompletedRequests ? ( // Conditionally render based on whether there are accepted requests or not
+      ) : hasAcceptedRequests ? ( // Conditionally render based on whether there are accepted requests or not
         <FlatList data={data} renderItem={renderItem} />
       ) : (
         <View style={styles.noRejectedRequest}>
@@ -152,4 +150,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-export default CompletedRequest;
+export default AcceptedRequest;

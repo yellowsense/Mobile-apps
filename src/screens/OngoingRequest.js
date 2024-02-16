@@ -2,24 +2,20 @@ import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   Image,
   StyleSheet,
-  TextInput,
-  ScrollView,
   FlatList,
   ActivityIndicator,
 } from 'react-native';
 import {wpx, hpx} from '../Component/responsive';
 import ScreenHeader from '../Component/CustomHeader/ScreenHeader';
 import axios from 'axios';
-// import {useFocusEffect} from '@react-navigation/native';
 
 const OngoingRequest = ({route}) => {
   const [data, setdata] = useState([]);
   const {ProviderNumber} = route.params;
   const [loading, setLoading] = useState(true);
-  const [hasTotalRequests, setHasTotalRequests] = useState(false); // New state to track if there are total requests
+  const [hasTotalRequests, setHasTotalRequests] = useState(false);
 
   useEffect(() => {
     getlist();
@@ -29,7 +25,7 @@ const OngoingRequest = ({route}) => {
   const getlist = () => {
     axios
       .get(
-        `https://yellowsensebackendapi.azurewebsites.net/serviceprovider/requests_details?provider_mobile=${ProviderNumber}&request_status=total`,
+        `https://backendapiyellowsense.azurewebsites.net/serviceprovider/requests_details?provider_mobile=${ProviderNumber}&request_status=total`,
       )
       .then(res => {
         const totalRequests = res?.data?.total_requests || [];
@@ -148,6 +144,10 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '600',
     marginTop: 5,
+  },
+  imageContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
   },
 });
 export default OngoingRequest;

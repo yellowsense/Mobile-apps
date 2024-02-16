@@ -19,9 +19,50 @@ import {sendNotificationToCustomer} from '../utils/notification';
 import LottieView from 'lottie-react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {SliderBox} from 'react-native-image-slider-box';
+import Sound from 'react-native-sound';
+import image1 from '../Assets/Banners/loan-image.png';
+import image2 from '../Assets/Banners/refer_banner.png';
 
 const CustomMessageDisplay = ({message, onAccept, onReject, onClose}) => {
   const navigation = useNavigation();
+  const [isAlarmActive, setIsAlarmActive] = useState(false);
+  const [alarmSound, setAlarmSound] = useState(null);
+  // let alarmSound = new Sound('notification.mp3', Sound.MAIN_BUNDLE);
+
+  useEffect(() => {
+    if (message) {
+      startAlarm();
+    }
+  }, [message]);
+
+  const startAlarm = () => {
+    setIsAlarmActive(true);
+    // Initialize the sound object
+    const sound = new Sound('buzzer_sound', Sound.MAIN_BUNDLE, error => {
+      if (error) {
+        console.log('Sound loading failed:', error);
+      } else {
+        console.log('Sound loaded successfully');
+        alarmSound.setNumberOfLoops(-1); // loop sound playing
+        sound.play(success => {
+          if (success) {
+            console.log('Sound played successfully');
+          } else {
+            console.log('Sound playback failed');
+          }
+        });
+        setAlarmSound(sound);
+      }
+    });
+  };
+
+  const stopAlarm = () => {
+    setIsAlarmActive(false);
+    if (alarmSound) {
+      alarmSound.stop();
+    }
+  };
 
   const storeMessageInAsyncStorage = async () => {
     try {
@@ -49,11 +90,13 @@ const CustomMessageDisplay = ({message, onAccept, onReject, onClose}) => {
   const handleRejectAction = () => {
     onReject();
     onClose();
+    stopAlarm();
   };
 
   const handleAcceptAction = () => {
     onAccept();
     onClose();
+    stopAlarm();
     navigation.navigate('OderStatus');
   };
 
@@ -159,6 +202,8 @@ const Home = () => {
   const [customerPhoneNumber, setCustomerPhoneNumber] = useState(null);
   const [forceRender, setForceRender] = useState(false);
 
+  // const images = [image1, image2];
+
   useEffect(() => {
     const retrieveStoredMessage = async () => {
       try {
@@ -221,7 +266,7 @@ const Home = () => {
   const getlist = () => {
     axios
       .get(
-        `https://yellowsensebackendapi.azurewebsites.net/serviceprovider/requests?provider_mobile=${user_mobile_number}`,
+        `https://backendapiyellowsense.azurewebsites.net/serviceprovider/requests?provider_mobile=${user_mobile_number}`,
       )
       .then(res => {
         setdata(res?.data);
@@ -374,15 +419,30 @@ const Home = () => {
         </View>
 
         <Image
-          source={require('../Assets/Banners/loan_banner.png')}
+          source={require('../Assets/Banners/refer_banner.png')}
           style={styles.bannerImage}
         />
+
+        {/* <SliderBox
+          images={images}
+          autoPlay
+          circleLoop
+          dotColor={'#F89C29'}
+          inactiveDotColor="#90a4ae"
+          ImageComponentStyle={{
+            width: '90%',
+            height: hpx(190),
+            marginVertical: hpx(20),
+            marginHorizontal: wpx(20),
+            resizeMode: 'contain',
+          }}
+        /> */}
 
         <View style={styles.serviceInfo}>
           <Text style={styles.serviceInfoText}>Service Overview</Text>
         </View>
 
-        <View style={styles.singleServiceCardContainer}>
+        <View style={styles.serviceCardContainer}>
           <TouchableOpacity
             style={[styles.serviceCard]}
             onPress={() =>
@@ -397,13 +457,28 @@ const Home = () => {
               Total Request
             </Text>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.serviceCard]}
+            onPress={() =>
+              navigation.navigate('CompletedRequest', {
+                ProviderNumber: user_mobile_number,
+              })
+            }>
+            <Text style={[styles.numberText, {color: '#FDD312'}]}>
+              {data?.completed_requests}
+            </Text>
+            <Text style={[styles.requestText, {color: '#FDD312'}]}>
+              Completed Request
+            </Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.serviceCardContainer}>
           <TouchableOpacity
             style={[styles.serviceCard]}
             onPress={() =>
-              navigation.navigate('CompletedRequest', {
+              navigation.navigate('AcceptedRequest', {
                 ProviderNumber: user_mobile_number,
               })
             }>
@@ -437,7 +512,13 @@ const Home = () => {
 
         <View style={styles.setAvailabilityCardContainer}>
           {/* // onPress={() => navigation.navigate('Availability')} */}
-          <TouchableOpacity style={[styles.setAvailabilityCard]}>
+          <TouchableOpacity
+            style={[styles.setAvailabilityCard]}
+            onPress={() =>
+              navigation.navigate('UpdateTimings', {
+                user_mobile_number: user_mobile_number,
+              })
+            }>
             <Image
               source={require('../Assets/time_calendar.png')}
               style={styles.cardImage}
@@ -530,7 +611,7 @@ const styles = StyleSheet.create({
     fontSize: 8,
   },
   bannerImage: {
-    width: '95%',
+    width: '90%',
     height: hpx(190),
     marginVertical: hpx(20),
     marginHorizontal: wpx(20),

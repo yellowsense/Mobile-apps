@@ -26,9 +26,10 @@ import {
   notificationListener,
   requestUserPermission,
 } from './src/utils/notification';
-import {StyleSheet} from 'react-native';
 import EditProfileScreen from './src/screens/EditProfileScreen';
 import OrderStatusScreen from './src/screens/OrderStatusScreen';
+import AcceptedRequest from './src/screens/AcceptedRequest';
+import UpdateTimings from './src/screens/UpdateTimings';
 
 const Stack = createStackNavigator();
 
@@ -95,14 +96,52 @@ const App = () => {
         />
         <Stack.Screen name="OngoingRequest" component={OngoingRequest} />
         <Stack.Screen name="CompletedRequest" component={CompletedRequest} />
+        <Stack.Screen name="AcceptedRequest" component={AcceptedRequest} />
         <Stack.Screen name="CancelledRequest" component={CancelledRequest} />
         <Stack.Screen name="Availability" component={Availability} />
         <Stack.Screen name="Notifcation" component={Notifcation} />
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         <Stack.Screen name="OderStatus" component={OrderStatusScreen} />
+        <Stack.Screen name="UpdateTimings" component={UpdateTimings} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
 
 export default App;
+
+// const [isAppFirstLaunched, setIsAppFirstLaunched] = useState(null);
+// const [isSplashVisible, setIsSplashVisible] = useState(true);
+// const [isLanguageScreenShowed, setIsLanguageScreenShowed] = useState(null);
+
+// useEffect(() => {
+//   const fetchData = async () => {
+//     try {
+//       const appData = await AsyncStorage.getItem('isAppFirstLaunched');
+//       const languageData = await AsyncStorage.getItem(
+//         'isLanguageScreenShowed',
+//       );
+
+//       console.log('App Data:', appData);
+//       console.log('Language Data:', languageData);
+
+//       if (appData == null && languageData == null) {
+//         setIsAppFirstLaunched(true);
+//         setIsLanguageScreenShowed(true);
+//         await AsyncStorage.setItem('isAppFirstLaunched', 'false');
+//         await AsyncStorage.setItem('isLanguageScreenShowed', 'false'); // Initialize as false
+//       } else {
+//         setIsAppFirstLaunched(false);
+//         setIsLanguageScreenShowed(false);
+//       }
+
+//       setTimeout(() => {
+//         setIsSplashVisible(false);
+//       }, 3000);
+//     } catch (error) {
+//       console.error('Error fetching data:', error);
+//     }
+//   };
+
+//   fetchData();
+// }, []);

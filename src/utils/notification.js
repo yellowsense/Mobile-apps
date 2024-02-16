@@ -29,7 +29,7 @@ export const notificationListener = () => {
       if (remoteMessage) {
         console.log(
           'Notification caused app to open from quit state:',
-          remoteMessage.notification,
+          remoteMessage,
         );
       }
     });
@@ -51,9 +51,11 @@ export async function onDisplayNotification() {
 
     // Create a channel (required for Android)
     const channelId = await notifee.createChannel({
-      id: 'default3',
-      name: 'default channel 5',
-      sound: 'notification',
+      id: 'notification_sound', // Use the correct channel ID
+      name: 'service_app',
+      sound: {
+        uri: 'notification', // Use the correct sound URI
+      },
       importance: AndroidImportance.HIGH,
     });
 
@@ -181,6 +183,40 @@ export async function sendNotificationToCustomerAboutLocation(mobileNumber) {
   } catch (error) {
     console.error(
       'Error sending notification to the customer About Location:',
+      error,
+    );
+  }
+}
+
+export async function statusUpdationAboutWork(mobileNumber) {
+  try {
+    const completedPayload = {
+      customer_mobile_number: mobileNumber,
+    };
+    const response = await fetch(
+      'https://backendapiyellowsense.azurewebsites.net/send_notification_to_customer_about_completed_update',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(completedPayload),
+      },
+    );
+
+    if (response.ok) {
+      const responseBody = await response.json();
+      console.log('Notification sent to the customer About completed task');
+      console.log('Notification Response:', responseBody);
+    } else {
+      console.error(
+        'Error sending notification to the customer About completed task. Server returned:',
+        response.status,
+      );
+    }
+  } catch (error) {
+    console.error(
+      'Error sending notification to the customer About completed task:',
       error,
     );
   }

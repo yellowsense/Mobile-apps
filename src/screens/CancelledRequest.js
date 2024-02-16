@@ -15,7 +15,6 @@ import {wpx, hpx} from '../Component/responsive';
 import ScreenHeader from '../Component/CustomHeader/ScreenHeader';
 import axios from 'axios';
 const CancelledRequest = ({route}) => {
-  const navigation = useNavigation();
   const [data, setdata] = useState([]);
   const {ProviderNumber} = route.params;
   const [loading, setLoading] = useState(true);
@@ -29,7 +28,7 @@ const CancelledRequest = ({route}) => {
   const getlist = () => {
     axios
       .get(
-        `https://yellowsensebackendapi.azurewebsites.net/serviceprovider/requests_details?provider_mobile=${ProviderNumber}&request_status=reject`,
+        `https://backendapiyellowsense.azurewebsites.net/serviceprovider/requests_details?provider_mobile=${ProviderNumber}&request_status=reject`,
       )
       .then(res => {
         const rejectRequests = res?.data?.reject_requests || [];
@@ -49,7 +48,7 @@ const CancelledRequest = ({route}) => {
     return (
       <View style={styles.helperInfoContainer}>
         <View style={styles.helperInfoView}>
-          <View style={{flexDirection: 'column', alignItems: 'center'}}>
+          <View style={styles.imageContainer}>
             <Image
               source={require('../Assets/profile.jpg')}
               style={styles.profileImage}
@@ -161,6 +160,10 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '600',
     marginTop: 5,
+  },
+  imageContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
   },
 });
 export default CancelledRequest;
