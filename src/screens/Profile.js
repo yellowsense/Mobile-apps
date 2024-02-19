@@ -76,6 +76,22 @@ const Profile = () => {
                 renderDetail('Languages', maidDetails.Languages)}
               {maidDetails.Services &&
                 renderDetail('Services', maidDetails.Services)}
+              <View style={styles.updateLocation}>
+                {maidDetails.Location &&
+                  renderDetail('Locations', maidDetails.Location)}
+                <TouchableOpacity
+                  style={styles.updateButton}
+                  onPress={() =>
+                    navigation.navigate('UpdateLocation', {
+                      userNumber: user_mobile_number,
+                    })
+                  }>
+                  <Image
+                    source={require('../Assets/pencil_edit.png')}
+                    style={styles.profile4BtnImage}
+                  />
+                </TouchableOpacity>
+              </View>
             </>
           ) : (
             <View style={styles.activityIndicatiorStyling}>
@@ -202,6 +218,17 @@ const styles = StyleSheet.create({
   },
   activityIndicatiorStyling: {
     alignSelf: 'center',
+  },
+  updateLocation: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  updateButton: {
+    backgroundColor: '#F9A73E',
+    padding: 2,
+    borderRadius: 5,
   },
 });
 

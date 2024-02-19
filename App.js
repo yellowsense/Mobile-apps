@@ -30,6 +30,7 @@ import EditProfileScreen from './src/screens/EditProfileScreen';
 import OrderStatusScreen from './src/screens/OrderStatusScreen';
 import AcceptedRequest from './src/screens/AcceptedRequest';
 import UpdateTimings from './src/screens/UpdateTimings';
+import UpdateLocation from './src/screens/UpdateLocation';
 
 const Stack = createStackNavigator();
 
@@ -103,6 +104,7 @@ const App = () => {
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         <Stack.Screen name="OderStatus" component={OrderStatusScreen} />
         <Stack.Screen name="UpdateTimings" component={UpdateTimings} />
+        <Stack.Screen name="UpdateLocation" component={UpdateLocation} />
       </Stack.Navigator>
     </NavigationContainer>
   );

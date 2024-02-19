@@ -23,6 +23,7 @@ const EditProfileScreen = () => {
   const [age, setAge] = useState('');
   const [services, setServices] = useState('');
   const [email, setEmail] = useState('');
+  const [location, setLocation] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -43,6 +44,7 @@ const EditProfileScreen = () => {
           setAge(maidDetails.Age);
           setServices(maidDetails.Services);
           setEmail(maidDetails.Email);
+          setLocation(maidDetails.Location);
         } else {
           console.error('Error fetching maid details');
         }
@@ -64,6 +66,7 @@ const EditProfileScreen = () => {
         age,
         services,
         email,
+        location,
       };
 
       const response = await axios.put(
@@ -162,6 +165,14 @@ const EditProfileScreen = () => {
           style={styles.editProfileInfoText}
         />
       </View>
+      {/* <View style={styles.editProfileInfoView}>
+        <TextInput
+          placeholder="Enter Locations"
+          value={location}
+          onChangeText={txt => setLocation(txt)}
+          style={styles.editProfileInfoText}
+        />
+      </View> */}
 
       <TouchableOpacity
         style={styles.updateBtnView}

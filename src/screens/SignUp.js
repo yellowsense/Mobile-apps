@@ -43,6 +43,7 @@ const Signin = () => {
           Email: values.email,
           MobileNumber: values.number,
           Passwrd: values.password.toString(),
+          Role: 'Servicer',
         },
         {
           headers: {

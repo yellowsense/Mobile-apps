@@ -44,7 +44,7 @@ const CustomMessageDisplay = ({message, onAccept, onReject, onClose}) => {
         console.log('Sound loading failed:', error);
       } else {
         console.log('Sound loaded successfully');
-        alarmSound.setNumberOfLoops(-1); // loop sound playing
+        sound.setNumberOfLoops(-1); // loop sound playing
         sound.play(success => {
           if (success) {
             console.log('Sound played successfully');
@@ -202,7 +202,7 @@ const Home = () => {
   const [customerPhoneNumber, setCustomerPhoneNumber] = useState(null);
   const [forceRender, setForceRender] = useState(false);
 
-  // const images = [image1, image2];
+  const images = [image1, image2, image1];
 
   useEffect(() => {
     const retrieveStoredMessage = async () => {
@@ -417,31 +417,27 @@ const Home = () => {
             </TouchableOpacity>
           </View>
         </View>
-
+        {/*
         <Image
           source={require('../Assets/Banners/refer_banner.png')}
           style={styles.bannerImage}
         />
-
-        {/* <SliderBox
+        */}
+        <SliderBox
           images={images}
           autoPlay
           circleLoop
           dotColor={'#F89C29'}
           inactiveDotColor="#90a4ae"
           ImageComponentStyle={{
-            width: '90%',
-            height: hpx(190),
+            width: '95%',
             marginVertical: hpx(20),
-            marginHorizontal: wpx(20),
             resizeMode: 'contain',
           }}
-        /> */}
-
+        />
         <View style={styles.serviceInfo}>
           <Text style={styles.serviceInfoText}>Service Overview</Text>
         </View>
-
         <View style={styles.serviceCardContainer}>
           <TouchableOpacity
             style={[styles.serviceCard]}
@@ -473,7 +469,6 @@ const Home = () => {
             </Text>
           </TouchableOpacity>
         </View>
-
         <View style={styles.serviceCardContainer}>
           <TouchableOpacity
             style={[styles.serviceCard]}
@@ -505,11 +500,9 @@ const Home = () => {
             </Text>
           </TouchableOpacity>
         </View>
-
         <View style={styles.availabilityView}>
           <Text style={styles.serviceInfoText}>Set Availability</Text>
         </View>
-
         <View style={styles.setAvailabilityCardContainer}>
           {/* // onPress={() => navigation.navigate('Availability')} */}
           <TouchableOpacity
