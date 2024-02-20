@@ -500,6 +500,15 @@ const Home = () => {
             </Text>
           </TouchableOpacity>
         </View>
+        <TouchableOpacity
+          style={styles.updateCustomerScreen}
+          onPress={() =>
+            navigation.navigate('OderStatus', {
+              ProviderNumber: user_mobile_number,
+            })
+          }>
+          <Text style={styles.updateText}>Go to Order Status</Text>
+        </TouchableOpacity>
         <View style={styles.availabilityView}>
           <Text style={styles.serviceInfoText}>Set Availability</Text>
         </View>
@@ -739,6 +748,22 @@ const styles = StyleSheet.create({
   actionText: {
     color: 'white',
     fontSize: 18,
+    fontWeight: '500',
+  },
+  updateCustomerScreen: {
+    padding: 12,
+    marginTop: 30,
+    display: 'flex',
+    backgroundColor: '#F89C29',
+    width: 170,
+    borderRadius: 7,
+    elevation: 5,
+    alignSelf: 'center',
+  },
+  updateText: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 16,
     fontWeight: '500',
   },
 });

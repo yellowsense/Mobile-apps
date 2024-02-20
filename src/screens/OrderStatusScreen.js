@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import ScreenHeader from '../Component/CustomHeader/ScreenHeader';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -14,6 +14,10 @@ const OrderStatusScreen = () => {
   const [customerPhoneNumber, setCustomerPhoneNumber] = useState(null);
   const [forceRender, setForceRender] = useState(false);
   const navigation = useNavigation();
+  const [isLoadingLocationReached, setIsLoadingLocationReached] =
+    useState(false);
+  const [isLoadingCompletedService, setIsLoadingCompletedService] =
+    useState(false);
 
   useEffect(() => {
     const retrieveStoredMessage = async () => {
@@ -39,6 +43,7 @@ const OrderStatusScreen = () => {
   }, [forceRender]);
 
   const sendNotificationToBackend = async () => {
+    setIsLoadingLocationReached(true);
     try {
       if (!customerPhoneNumber) {
         console.error('Customer phone number not available');
@@ -66,15 +71,20 @@ const OrderStatusScreen = () => {
         console.log(
           'Notification sent to the backend server about reaching the location!',
         );
+
+        // await new Promise(resolve => setTimeout(resolve, 2000));
       } else {
         console.error('Customer FCM token not found in Firestore');
       }
     } catch (error) {
       console.error('Error sending notification to backend:', error);
+    } finally {
+      setIsLoadingLocationReached(false);
     }
   };
 
   const sendNotificationToBackendAboutTask = async () => {
+    setIsLoadingCompletedService(true);
     try {
       if (!customerPhoneNumber) {
         console.error('Customer phone number not available');
@@ -107,6 +117,8 @@ const OrderStatusScreen = () => {
       }
     } catch (error) {
       console.error('Error sending notification to backend:', error);
+    } finally {
+      setIsLoadingCompletedService(false);
     }
   };
 
@@ -125,13 +137,21 @@ const OrderStatusScreen = () => {
           <TouchableOpacity
             style={styles.buttonLR}
             onPress={sendNotificationToBackend}>
-            <Text style={styles.textStatus}>Location Reached</Text>
+            {isLoadingLocationReached ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              <Text style={styles.textStatus}>Location Reached</Text>
+            )}
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.buttonCS}
             onPress={sendNotificationToBackendAboutTask}>
-            <Text style={styles.textStatus}>Completed Service</Text>
+            {isLoadingCompletedService ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              <Text style={styles.textStatus}>Completed Service</Text>
+            )}
           </TouchableOpacity>
         </View>
 
