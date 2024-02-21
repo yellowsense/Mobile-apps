@@ -8,7 +8,6 @@ import {
   ScrollView,
   StyleSheet,
   Dimensions,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import {wpx, hpx} from '../Component/responsive';
 import {Dropdown} from 'react-native-element-dropdown';
@@ -16,33 +15,7 @@ import axios from 'axios';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import LottieView from 'lottie-react-native';
-import {Modal} from 'react-native-paper';
-
-const StatusUpdationNotification = ({message}) => {
-  if (!message || !message.notification) {
-    return null;
-  }
-
-  const {title, body} = message.notification;
-
-  const handleMessage = () => {};
-
-  return (
-    <Modal visible={!message} animationType="slide" transparent>
-      <TouchableWithoutFeedback onPress={handleMessage}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <View style={{width: 300}}>
-              <Text style={styles.actionText5}>{title}</Text>
-              <Text style={{fontSize: 16}}>{body}</Text>
-            </View>
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
-    </Modal>
-  );
-};
+import SendFeedForm from '../Component/SendFeedForm';
 
 const Home = ({route}) => {
   const {width: screenWidth} = Dimensions.get('window');
@@ -420,7 +393,7 @@ const Home = ({route}) => {
               What our customers say ?
             </Text>
           </View>
-          <StatusUpdationNotification message={displayMessage} />
+          {/* <StatusUpdationNotification message={displayMessage} /> */}
           <View style={styles.cardContainer}>
             <View style={styles.cardContent}>
               <Text style={styles.doctorText}>Dr. Swati</Text>
@@ -440,6 +413,8 @@ const Home = ({route}) => {
               </Text>
             </View>
           </View>
+
+          {/* <SendFeedForm message={displayMessage} /> */}
         </ScrollView>
       </View>
     </>

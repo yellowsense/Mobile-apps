@@ -104,7 +104,7 @@ const ConfirmationLoadingScreen = () => {
             <View style={styles.actionButtons}>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
-                onPress={() => navigation.navigate('Home')}>
+                onPress={() => navigation.navigate('BottomTabNavigator')}>
                 <Text style={styles.textStyle}>Yes</Text>
               </Pressable>
               <Pressable

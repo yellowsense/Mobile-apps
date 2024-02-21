@@ -20,10 +20,46 @@ import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {sendNotificationToServiceProvider} from '../utils/notification';
 import LottieView from 'lottie-react-native';
+import Sound from 'react-native-sound';
 
 const CustomMessageDisplay = ({message, onAccept, onReject, onClose}) => {
   const navigation = useNavigation();
   const [assignNewShown, setAssignNewShown] = useState(false);
+  const [isAlarmActive, setIsAlarmActive] = useState(false);
+  const [alarmSound, setAlarmSound] = useState(null);
+
+  useEffect(() => {
+    if (message) {
+      startAlarm();
+    }
+  }, [message]);
+
+  const startAlarm = () => {
+    setIsAlarmActive(true);
+    // Initialize the sound object
+    const sound = new Sound('sound', Sound.MAIN_BUNDLE, error => {
+      if (error) {
+        console.log('Sound loading failed:', error);
+      } else {
+        console.log('Sound loaded successfully');
+        sound.play(success => {
+          if (success) {
+            console.log('Sound played successfully');
+          } else {
+            console.log('Sound playback failed');
+          }
+        });
+        setAlarmSound(sound);
+      }
+    });
+  };
+
+  const stopAlarm = () => {
+    setIsAlarmActive(false);
+    if (alarmSound) {
+      alarmSound.stop();
+    }
+  };
 
   useEffect(() => {
     // Check if message exists and notification title includes "Service Provider Update"
@@ -93,6 +129,7 @@ const CustomMessageDisplay = ({message, onAccept, onReject, onClose}) => {
                       <TouchableOpacity
                         onPress={() => {
                           onClose();
+                          stopAlarm();
                           navigation.navigate('Booking');
                         }}
                         style={styles.rejectButton}>
@@ -102,6 +139,7 @@ const CustomMessageDisplay = ({message, onAccept, onReject, onClose}) => {
                       <TouchableOpacity
                         onPress={() => {
                           onClose();
+                          stopAlarm();
                           navigation.navigate('HomeScreen');
                         }}
                         style={styles.acceptButton1}>
@@ -116,6 +154,7 @@ const CustomMessageDisplay = ({message, onAccept, onReject, onClose}) => {
                       <TouchableOpacity
                         onPress={() => {
                           onClose();
+                          stopAlarm();
                           navigation.navigate('HomeScreen');
                         }}
                         style={styles.acceptButtonOk}>
@@ -124,6 +163,7 @@ const CustomMessageDisplay = ({message, onAccept, onReject, onClose}) => {
                       <TouchableOpacity
                         onPress={() => {
                           onClose();
+                          stopAlarm();
                           navigation.navigate('Support');
                         }}
                         style={styles.actionTextNeedHelp}>

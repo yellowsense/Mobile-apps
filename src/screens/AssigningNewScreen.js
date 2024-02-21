@@ -17,7 +17,7 @@ const AssigningNewScreen = () => {
       </Text>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => navigation.navigate('BottomTabNavigator')}
           style={styles.assignButton1}>
           <Text style={styles.buttonText}>Not Now</Text>
         </TouchableOpacity>
