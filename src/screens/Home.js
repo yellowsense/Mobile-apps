@@ -23,6 +23,7 @@ import {SliderBox} from 'react-native-image-slider-box';
 import Sound from 'react-native-sound';
 import image1 from '../Assets/Banners/loan-image.png';
 import image2 from '../Assets/Banners/refer_banner.png';
+import RemainderNotification from '../Component/RemainderNotification';
 
 const CustomMessageDisplay = ({message, onAccept, onReject, onClose}) => {
   const navigation = useNavigation();
@@ -201,8 +202,9 @@ const Home = () => {
   const {user_mobile_number} = route.params;
   const [customerPhoneNumber, setCustomerPhoneNumber] = useState(null);
   const [forceRender, setForceRender] = useState(false);
+  const [notificationData, setNotificationData] = useState(null);
 
-  const images = [image1, image2, image1];
+  const images = [image1, image2];
 
   useEffect(() => {
     const retrieveStoredMessage = async () => {
@@ -537,6 +539,7 @@ const Home = () => {
         onReject={handleReject}
         onClose={onCloseMessage}
       />
+      {/* <RemainderNotification message={onCloseMessage} /> */}
     </View>
   );
 };

@@ -221,3 +221,37 @@ export async function statusUpdationAboutWork(mobileNumber) {
     );
   }
 }
+
+export async function statusUpdationAboutFeedback(mobileNumber) {
+  try {
+    const completedPayload = {
+      customer_mobile_number: mobileNumber,
+    };
+    const response = await fetch(
+      'https://backendapiyellowsense.azurewebsites.net/send_notification_to_customer_about_feedback',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(completedPayload),
+      },
+    );
+
+    if (response.ok) {
+      const responseBody = await response.json();
+      console.log('Notification sent to the customer About Feedback');
+      console.log('Notification Response:', responseBody);
+    } else {
+      console.error(
+        'Error sending notification to the customer About completed task. Server returned:',
+        response.status,
+      );
+    }
+  } catch (error) {
+    console.error(
+      'Error sending notification to the customer About completed task:',
+      error,
+    );
+  }
+}

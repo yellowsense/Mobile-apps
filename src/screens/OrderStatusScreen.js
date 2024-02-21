@@ -5,6 +5,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   sendNotificationToCustomerAboutLocation,
+  statusUpdationAboutFeedback,
   statusUpdationAboutWork,
 } from '../utils/notification';
 import firestore from '@react-native-firebase/firestore';
@@ -18,6 +19,7 @@ const OrderStatusScreen = () => {
     useState(false);
   const [isLoadingCompletedService, setIsLoadingCompletedService] =
     useState(false);
+  const [isLoadingFeedback, setIsLoadingFeedback] = useState(false);
 
   useEffect(() => {
     const retrieveStoredMessage = async () => {
@@ -71,8 +73,6 @@ const OrderStatusScreen = () => {
         console.log(
           'Notification sent to the backend server about reaching the location!',
         );
-
-        // await new Promise(resolve => setTimeout(resolve, 2000));
       } else {
         console.error('Customer FCM token not found in Firestore');
       }
@@ -122,6 +122,45 @@ const OrderStatusScreen = () => {
     }
   };
 
+  const sendNotificationToBackendAboutFeedback = async () => {
+    setIsLoadingFeedback(true);
+    try {
+      if (!customerPhoneNumber) {
+        console.error('Customer phone number not available');
+        return;
+      }
+
+      // Retrieve the FCM token for the customer from Firestore
+      const customerDoc = await firestore()
+        .collection('customer_tokens')
+        .doc(customerPhoneNumber)
+        .get();
+
+      if (customerDoc.exists) {
+        const customerData = customerDoc.data();
+        console.log(
+          'Retrieved Customer Data:',
+          customerData,
+          customerPhoneNumber,
+        );
+
+        // Send notification to the backend server
+        await statusUpdationAboutFeedback(customerPhoneNumber);
+
+        console.log('Notification sent to the backend server about Feedback!');
+      } else {
+        console.error('Customer FCM token not found in Firestore');
+      }
+    } catch (error) {
+      console.log(
+        error,
+        'Error while sending notification to customer about Feedback',
+      );
+    } finally {
+      setIsLoadingFeedback(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View>
@@ -151,6 +190,16 @@ const OrderStatusScreen = () => {
               <ActivityIndicator size="small" color="white" />
             ) : (
               <Text style={styles.textStatus}>Completed Service</Text>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.buttonFB}
+            onPress={sendNotificationToBackendAboutFeedback}>
+            {isLoadingFeedback ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              <Text style={styles.textStatus}>Get FeedBack from Customer</Text>
             )}
           </TouchableOpacity>
         </View>
@@ -212,6 +261,15 @@ const styles = StyleSheet.create({
     marginTo: 100,
     margin: 20,
     backgroundColor: '#FF8911',
+    elevation: 5,
+    borderRadius: 10,
+    width: 300,
+  },
+  buttonFB: {
+    padding: 15,
+    marginTo: 100,
+    margin: 20,
+    backgroundColor: '#F2CA05',
     elevation: 5,
     borderRadius: 10,
     width: 300,
